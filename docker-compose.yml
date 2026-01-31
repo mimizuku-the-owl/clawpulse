@@ -1,0 +1,31 @@
+services:
+  convex-backend:
+    image: ghcr.io/get-convex/convex-backend:latest
+    stop_grace_period: 10s
+    stop_signal: SIGINT
+    ports:
+      - "3212:3210"
+      - "3213:3211"
+    volumes:
+      - clawpulse-data:/convex/data
+    environment:
+      - CONVEX_CLOUD_ORIGIN=http://100.115.177.85:3212
+      - CONVEX_SITE_ORIGIN=http://100.115.177.85:3213
+      - DOCUMENT_RETENTION_DELAY=172800
+      - DO_NOT_REQUIRE_SSL=true
+      - RUST_LOG=info
+      - DISABLE_BEACON=true
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3210/version"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - clawpulse
+
+networks:
+  clawpulse:
+
+volumes:
+  clawpulse-data:
