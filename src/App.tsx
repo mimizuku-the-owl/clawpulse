@@ -10,6 +10,7 @@ import { AgentOfTheWeek } from "./components/AgentOfTheWeek";
 import { BadgeShowcase } from "./components/BadgeShowcase";
 import { AgentProfileModal } from "./components/AgentProfileModal";
 import { ConnectAgent } from "./components/ConnectAgent";
+import { AnalyticsSection } from "./components/analytics/AnalyticsSection";
 import { UsersPage } from "./pages/UsersPage";
 import type { Id } from "../convex/_generated/dataModel";
 
@@ -72,6 +73,9 @@ export function App() {
               <BadgeShowcase />
             </div>
           </div>
+
+          {/* Ecosystem Analytics */}
+          <AnalyticsSection />
 
           {/* Connect Your Agent */}
           <ConnectAgent />
