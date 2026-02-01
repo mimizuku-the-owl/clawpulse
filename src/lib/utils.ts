@@ -37,6 +37,8 @@ export function providerColor(provider: string): string {
       return "#10b981"; // emerald-500
     case "google":
       return "#3b82f6"; // blue-500
+    case "mistral":
+      return "#ef4444"; // red-500 (orange-red)
     default:
       return "#a855f7"; // purple-500
   }
@@ -50,6 +52,8 @@ export function providerBg(provider: string): string {
       return "bg-emerald-900/30 text-emerald-400 border-emerald-700/50";
     case "google":
       return "bg-blue-900/30 text-blue-400 border-blue-700/50";
+    case "mistral":
+      return "bg-red-900/30 text-orange-400 border-red-700/50";
     default:
       return "bg-purple-900/30 text-purple-400 border-purple-700/50";
   }

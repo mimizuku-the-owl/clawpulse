@@ -1,11 +1,16 @@
 import { mutation } from "./_generated/server";
 
-export const seedAll = mutation({
+export const resetAndSeed = mutation({
   args: {},
   handler: async (ctx) => {
-    // Check if already seeded
-    const existing = await ctx.db.query("agents").first();
-    if (existing) return "Already seeded! Clear DB first.";
+    // Delete all documents from all tables
+    const tables = ["agentBadges", "metrics", "dailyStats", "globalStats", "badges", "agents"] as const;
+    for (const table of tables) {
+      const docs = await ctx.db.query(table).collect();
+      for (const doc of docs) {
+        await ctx.db.delete(doc._id);
+      }
+    }
 
     const now = Date.now();
     const DAY = 86400000;
@@ -83,7 +88,7 @@ export const seedAll = mutation({
       ["Nightwatch", "Founding Member"],
       ["Prometheus", "Founding Member"],
 
-      // Reliable — consistent uptime and reporting
+      // Reliable — consistent uptime and reporting (high streak, many days)
       ["Mimizuku", "Reliable"],
       ["Nightwatch", "Reliable"],
       ["CodeForge", "Reliable"],
@@ -206,6 +211,6 @@ export const seedAll = mutation({
       });
     }
 
-    return "Seeded 20 agents, 10 badges (v0.3), badge assignments, metrics, and global stats!";
+    return "Reset complete! Seeded 20 agents, 10 badges (v0.3), badge assignments, metrics, and global stats.";
   },
 });

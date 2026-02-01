@@ -100,6 +100,47 @@ export const get = query({
   },
 });
 
+// Get agent profile with full detail (badges with earnedAt, token breakdown)
+export const getProfile = query({
+  args: { agentId: v.id("agents") },
+  handler: async (ctx, args) => {
+    const agent = await ctx.db.get(args.agentId);
+    if (!agent) return null;
+
+    // Get badges with earnedAt
+    const agentBadges = await ctx.db
+      .query("agentBadges")
+      .withIndex("by_agent", (q) => q.eq("agentId", agent._id))
+      .collect();
+    const badges = await Promise.all(
+      agentBadges.map(async (ab) => {
+        const badge = await ctx.db.get(ab.badgeId);
+        return badge ? { ...badge, earnedAt: ab.earnedAt } : null;
+      }),
+    );
+
+    // Get recent metrics for token breakdown
+    const metrics = await ctx.db
+      .query("metrics")
+      .withIndex("by_agent_time", (q) => q.eq("agentId", agent._id))
+      .collect();
+
+    const totalInput = metrics.reduce((s, m) => s + m.inputTokens, 0);
+    const totalOutput = metrics.reduce((s, m) => s + m.outputTokens, 0);
+    const totalCache = metrics.reduce((s, m) => s + m.cacheReadTokens, 0);
+
+    return {
+      ...agent,
+      badges: badges.filter(Boolean),
+      tokenBreakdown: {
+        input: totalInput,
+        output: totalOutput,
+        cache: totalCache,
+      },
+    };
+  },
+});
+
 // Get agent of the week (highest spend in last 7 days)
 export const agentOfTheWeek = query({
   args: {},

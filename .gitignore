@@ -24,3 +24,4 @@ Thumbs.db
 
 # Lock files (optional: uncomment if using bun)
 # bun.lock
+.env.local

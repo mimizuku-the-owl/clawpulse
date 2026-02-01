@@ -85,3 +85,55 @@ export const globalStats = query({
     };
   },
 });
+
+// Ecosystem spend timeline (last 30 days)
+export const ecosystemTimeline = query({
+  args: {},
+  handler: async (ctx) => {
+    const stats = await ctx.db.query("globalStats").collect();
+    // Sort by date ascending
+    stats.sort((a, b) => a.date.localeCompare(b.date));
+    // Return last 30 entries
+    return stats.slice(-30).map((s) => ({
+      date: s.date,
+      cost: Math.round(s.totalCost * 100) / 100,
+      tokens: s.totalTokens,
+      activeAgents: s.activeAgents,
+    }));
+  },
+});
+
+// Agent daily stats for sparklines and profile charts
+export const agentTimeline = query({
+  args: { agentId: v.id("agents") },
+  handler: async (ctx, args) => {
+    const stats = await ctx.db
+      .query("dailyStats")
+      .withIndex("by_agent_date", (q) => q.eq("agentId", args.agentId))
+      .collect();
+
+    stats.sort((a, b) => a.date.localeCompare(b.date));
+
+    return stats.slice(-30).map((s) => ({
+      date: s.date,
+      cost: Math.round(s.totalCost * 100) / 100,
+      tokens: s.totalTokens,
+      sessions: s.sessionCount,
+    }));
+  },
+});
+
+// Health check — returns basic system status
+export const healthCheck = query({
+  args: {},
+  handler: async (ctx) => {
+    const agentCount = (await ctx.db.query("agents").collect()).length;
+    const latestGlobal = await ctx.db.query("globalStats").order("desc").first();
+    return {
+      dbOk: true,
+      agentCount,
+      latestDate: latestGlobal?.date ?? null,
+      timestamp: Date.now(),
+    };
+  },
+});

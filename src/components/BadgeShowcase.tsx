@@ -8,7 +8,7 @@ export function BadgeShowcase() {
   if (!badges) {
     return (
       <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6 animate-pulse">
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3">
           {[...Array(6)].map((_, i) => (
             <div key={i} className="h-20 bg-zinc-800 rounded-lg" />
           ))}
@@ -18,7 +18,7 @@ export function BadgeShowcase() {
   }
 
   return (
-    <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-6">
+    <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 sm:p-6">
       <div className="flex items-center gap-2 mb-4">
         <Award className="w-5 h-5 text-pulse-500" />
         <h3 className="font-semibold text-zinc-100">Badge Showcase</h3>
@@ -27,14 +27,14 @@ export function BadgeShowcase() {
         </span>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-3">
         {badges.map((badge) => (
           <div
             key={badge._id}
             className="bg-zinc-800/50 border border-zinc-700/50 rounded-lg p-3 hover:border-pulse-500/30 transition-colors group"
           >
             <div className="flex items-start gap-3">
-              <span className="text-2xl group-hover:scale-110 transition-transform">{badge.icon}</span>
+              <span className="text-2xl group-hover:scale-110 transition-transform shrink-0">{badge.icon}</span>
               <div className="min-w-0">
                 <p className="font-medium text-zinc-200 text-sm">{badge.name}</p>
                 <p className="text-xs text-zinc-500 mt-0.5 line-clamp-2">{badge.description}</p>

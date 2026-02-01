@@ -12,6 +12,8 @@
   --color-pulse-800: #6b21a8;
   --color-pulse-900: #581c87;
   --color-pulse-950: #3b0764;
+
+  --animate-gradient-shift: gradient-shift 4s ease-in-out infinite;
 }
 
 body {
@@ -35,4 +37,17 @@ body {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #52525b;
+}
+
+/* Gradient border animation for Agent of the Week */
+@keyframes gradient-shift {
+  0%,
+  100% {
+    opacity: 0.5;
+    filter: blur(1px);
+  }
+  50% {
+    opacity: 0.8;
+    filter: blur(2px);
+  }
 }
