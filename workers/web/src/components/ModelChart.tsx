@@ -1,5 +1,5 @@
 import { useQuery } from "convex/react";
-import { api } from "../../../packages/convex/convex/_generated/api";
+import { api } from "../../../../packages/convex/convex/_generated/api";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import { BarChart3 } from "lucide-react";
 

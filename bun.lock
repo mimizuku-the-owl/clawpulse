@@ -21,7 +21,7 @@
       "name": "@clawpulse/tsconfig",
       "version": "0.0.0",
     },
-    "workers/clawpulse-web": {
+    "workers/web": {
       "name": "@clawpulse/web",
       "version": "0.0.0",
       "dependencies": {
@@ -87,7 +87,7 @@
 
     "@clawpulse/tsconfig": ["@clawpulse/tsconfig@workspace:tooling/typescript"],
 
-    "@clawpulse/web": ["@clawpulse/web@workspace:workers/clawpulse-web"],
+    "@clawpulse/web": ["@clawpulse/web@workspace:workers/web"],
 
     "@cloudflare/kv-asset-handler": ["@cloudflare/kv-asset-handler@0.4.2", "", {}, "sha512-SIOD2DxrRRwQ+jgzlXCqoEFiKOFqaPjhnNTGKXSRLvp1HiOvapLaFG2kEr9dYQTYe8rKrd9uvDUzmAITeNyaHQ=="],
 

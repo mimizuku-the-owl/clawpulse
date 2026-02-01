@@ -17,7 +17,7 @@ import { ProviderComparisonChart } from "./components/analytics/ProviderComparis
 import { EfficiencyLeaderboardChart } from "./components/analytics/EfficiencyLeaderboardChart";
 import { CacheUtilizationChart } from "./components/analytics/CacheUtilizationChart";
 import { UsersPage } from "./pages/UsersPage";
-import type { Id } from "../../packages/convex/convex/_generated/dataModel";
+import type { Id } from "../../../packages/convex/convex/_generated/dataModel";
 
 type Page = "home" | "agents";
 

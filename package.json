@@ -4,12 +4,12 @@
   "private": true,
   "workspaces": [
     "packages/convex",
-    "workers/clawpulse-web",
+    "workers/web",
     "tooling/typescript"
   ],
   "scripts": {
-    "dev": "cd workers/clawpulse-web && bun run dev",
-    "build": "cd workers/clawpulse-web && bun run build",
+    "dev": "cd workers/web && bun run dev",
+    "build": "cd workers/web && bun run build",
     "clean": "git clean -xdf node_modules dist .wrangler"
   },
   "devDependencies": {

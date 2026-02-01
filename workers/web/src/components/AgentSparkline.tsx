@@ -1,7 +1,7 @@
 import { useQuery } from "convex/react";
-import { api } from "../../../packages/convex/convex/_generated/api";
+import { api } from "../../../../packages/convex/convex/_generated/api";
 import { AreaChart, Area, ResponsiveContainer } from "recharts";
-import type { Id } from "../../../packages/convex/convex/_generated/dataModel";
+import type { Id } from "../../../../packages/convex/convex/_generated/dataModel";
 
 interface AgentSparklineProps {
   agentId: Id<"agents">;
