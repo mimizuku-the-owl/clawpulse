@@ -1,5 +1,5 @@
 import { useQuery } from "convex/react";
-import { api } from "../../convex/_generated/api";
+import { api } from "../../../packages/convex/convex/_generated/api";
 import { Users, DollarSign, Cpu, Zap } from "lucide-react";
 import { formatDollars, formatTokens } from "../lib/utils";
 import { useAnimatedCount } from "../hooks/useAnimatedCount";

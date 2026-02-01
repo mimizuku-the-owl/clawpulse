@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { useQuery } from "convex/react";
-import { api } from "../../convex/_generated/api";
+import { api } from "../../../packages/convex/convex/_generated/api";
 import {
   Search,
   Users,
@@ -17,7 +17,7 @@ import {
   cn,
   timeAgo,
 } from "../lib/utils";
-import type { Id } from "../../convex/_generated/dataModel";
+import type { Id } from "../../../packages/convex/convex/_generated/dataModel";
 
 type SortKey =
   | "name"

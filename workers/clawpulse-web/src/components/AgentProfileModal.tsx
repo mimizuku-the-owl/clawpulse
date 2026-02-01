@@ -1,5 +1,5 @@
 import { useQuery } from "convex/react";
-import { api } from "../../convex/_generated/api";
+import { api } from "../../../packages/convex/convex/_generated/api";
 import {
   AreaChart,
   Area,
@@ -14,7 +14,7 @@ import {
 } from "recharts";
 import { X, Flame, Calendar, Cpu, DollarSign } from "lucide-react";
 import { formatDollars, formatTokens, providerBg, providerColor, cn, timeAgo } from "../lib/utils";
-import type { Id } from "../../convex/_generated/dataModel";
+import type { Id } from "../../../packages/convex/convex/_generated/dataModel";
 
 interface AgentProfileModalProps {
   agentId: Id<"agents">;

@@ -1,5 +1,5 @@
 import { useQuery } from "convex/react";
-import { api } from "../../convex/_generated/api";
+import { api } from "../../../packages/convex/convex/_generated/api";
 import { Star, Flame, Clock, DollarSign, Cpu } from "lucide-react";
 import { formatDollars, formatTokens, providerBg, cn } from "../lib/utils";
 

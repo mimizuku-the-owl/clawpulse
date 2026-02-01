@@ -1,0 +1,14 @@
+{
+  "name": "@clawpulse/convex",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "npx convex dev",
+    "push": "npx convex push --typecheck disable",
+    "deploy": "npx convex deploy --typecheck disable"
+  },
+  "dependencies": {
+    "convex": "^1.31.7"
+  }
+}

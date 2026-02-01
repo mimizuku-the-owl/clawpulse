@@ -1,0 +1,30 @@
+{
+  "name": "@clawpulse/web",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "vite dev --host 0.0.0.0 --port 5174",
+    "build": "vite build",
+    "deploy:dev": "wrangler pages deploy dist",
+    "deploy:prod": "wrangler pages deploy dist --branch main"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "convex": "^1.31.7",
+    "lucide-react": "^0.563.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "recharts": "^3.7.0",
+    "tailwind-merge": "^3.4.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.1.18",
+    "@types/react": "^19.2.10",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^5.1.2",
+    "tailwindcss": "^4.1.18",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1"
+  }
+}

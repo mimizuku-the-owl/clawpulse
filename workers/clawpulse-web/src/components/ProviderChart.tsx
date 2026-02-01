@@ -1,5 +1,5 @@
 import { useQuery } from "convex/react";
-import { api } from "../../convex/_generated/api";
+import { api } from "../../../packages/convex/convex/_generated/api";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recharts";
 import { PieChartIcon } from "lucide-react";
 import { providerColor, formatDollars } from "../lib/utils";

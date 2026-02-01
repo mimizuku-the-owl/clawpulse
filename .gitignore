@@ -1,15 +1,18 @@
 # Dependencies
-node_modules/
+**/node_modules/
 
 # Build output
-dist/
+**/dist/
 
 # Environment files
-.env.local
+**/.env.local
 .env.production
 
 # Convex generated
-convex/_generated/
+**/convex/_generated/
+
+# Wrangler
+**/.wrangler/
 
 # IDE
 .vscode/
@@ -22,9 +25,8 @@ Thumbs.db
 # Logs
 *.log
 
-# Lock files (optional: uncomment if using bun)
-# bun.lock
-.env.local
+# Lock files
+bun.lock
 
 # API key files
-.*-api-key
+**/*-api-key
