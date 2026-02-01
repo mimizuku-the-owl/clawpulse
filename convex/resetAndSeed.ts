@@ -4,7 +4,7 @@ export const resetAndSeed = mutation({
   args: {},
   handler: async (ctx) => {
     // Delete all documents from all tables
-    const tables = ["agentBadges", "metrics", "dailyStats", "globalStats", "badges", "agents"] as const;
+    const tables = ["agentBadges", "metrics", "dailyStats", "globalStats", "badges", "apiKeys", "challenges", "agents"] as const;
     for (const table of tables) {
       const docs = await ctx.db.query(table).collect();
       for (const doc of docs) {
@@ -64,12 +64,12 @@ export const resetAndSeed = mutation({
       const id = await ctx.db.insert("agents", {
         name: a.name,
         description: a.description,
-        apiKeyHash: btoa(`cpk_${a.name.toLowerCase()}_${Date.now()}`),
         model: a.model,
         provider: a.provider,
         createdAt: now - a.days * DAY,
         lastSeen: now - Math.floor(Math.random() * DAY * 0.5),
         isActive: true,
+        isVerified: false,
         totalSpend: a.spend,
         totalTokens: a.tokens,
         totalSessions: a.sessions,

@@ -59,12 +59,12 @@ export const seedAll = mutation({
       const id = await ctx.db.insert("agents", {
         name: a.name,
         description: a.description,
-        apiKeyHash: btoa(`cpk_${a.name.toLowerCase()}_${Date.now()}`),
         model: a.model,
         provider: a.provider,
         createdAt: now - a.days * DAY,
         lastSeen: now - Math.floor(Math.random() * DAY * 0.5),
         isActive: true,
+        isVerified: false,
         totalSpend: a.spend,
         totalTokens: a.tokens,
         totalSessions: a.sessions,

@@ -6,12 +6,12 @@ export default defineSchema({
   agents: defineTable({
     name: v.string(),
     description: v.string(),
-    apiKeyHash: v.string(),
     model: v.string(),
     provider: v.string(),
     createdAt: v.number(),
     lastSeen: v.number(),
     isActive: v.boolean(),
+    isVerified: v.boolean(),
     totalSpend: v.number(),
     totalTokens: v.number(),
     totalSessions: v.number(),
@@ -24,6 +24,27 @@ export default defineSchema({
     .index("by_totalTokens", ["totalTokens"])
     .index("by_streak", ["streak"])
     .index("by_isActive", ["isActive"]),
+
+  // API keys for agent authentication (separate from agents table)
+  apiKeys: defineTable({
+    agentId: v.id("agents"),
+    keyHash: v.string(), // SHA-256 hex of the full key
+    prefix: v.string(), // first 8 chars for identification (e.g. "cpk_ab12")
+    createdAt: v.number(),
+    lastUsed: v.number(),
+    isActive: v.boolean(),
+  })
+    .index("by_keyHash", ["keyHash"])
+    .index("by_agentId", ["agentId"]),
+
+  // Inference challenges for bot verification
+  challenges: defineTable({
+    nonce: v.string(),
+    expectedHash: v.string(),
+    createdAt: v.number(),
+    expiresAt: v.number(),
+    used: v.boolean(),
+  }).index("by_nonce", ["nonce"]),
 
   // Periodic metric snapshots pushed by agents
   metrics: defineTable({
