@@ -1,39 +1,5 @@
-import { mutation, query } from "./_generated/server";
+import { query } from "./_generated/server";
 import { v } from "convex/values";
-
-// Register a new agent
-export const register = mutation({
-  args: {
-    name: v.string(),
-    description: v.string(),
-    model: v.string(),
-    provider: v.string(),
-  },
-  handler: async (ctx, args) => {
-    // Generate a fake API key (in production, use proper crypto)
-    const apiKey = `cpk_${Date.now()}_${Math.random().toString(36).slice(2, 15)}`;
-    const apiKeyHash = btoa(apiKey); // simple hash for demo
-
-    const now = Date.now();
-    const agentId = await ctx.db.insert("agents", {
-      name: args.name,
-      description: args.description,
-      apiKeyHash,
-      model: args.model,
-      provider: args.provider,
-      createdAt: now,
-      lastSeen: now,
-      isActive: true,
-      totalSpend: 0,
-      totalTokens: 0,
-      totalSessions: 0,
-      daysActive: 1,
-      streak: 1,
-    });
-
-    return { agentId, apiKey };
-  },
-});
 
 // Get all agents for leaderboard
 export const listLeaderboard = query({
@@ -138,6 +104,48 @@ export const getProfile = query({
         cache: totalCache,
       },
     };
+  },
+});
+
+// List ALL agents for the public directory page
+export const listAll = query({
+  args: {},
+  handler: async (ctx) => {
+    const agents = await ctx.db.query("agents").collect();
+
+    // Enrich each agent with badges + API key prefix
+    const enriched = await Promise.all(
+      agents.map(async (agent) => {
+        // Badges
+        const agentBadges = await ctx.db
+          .query("agentBadges")
+          .withIndex("by_agent", (q) => q.eq("agentId", agent._id))
+          .collect();
+        const badges = await Promise.all(
+          agentBadges.map(async (ab) => {
+            const badge = await ctx.db.get(ab.badgeId);
+            return badge ? { ...badge, earnedAt: ab.earnedAt } : null;
+          }),
+        );
+
+        // API key prefix (for display)
+        const keyRecord = await ctx.db
+          .query("apiKeys")
+          .withIndex("by_agentId", (q) => q.eq("agentId", agent._id))
+          .first();
+
+        return {
+          ...agent,
+          badges: badges.filter(Boolean),
+          apiKeyPrefix: keyRecord?.prefix ?? null,
+        };
+      }),
+    );
+
+    // Sort newest first
+    enriched.sort((a, b) => b.createdAt - a.createdAt);
+
+    return enriched;
   },
 });
 

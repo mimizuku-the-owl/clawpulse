@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Header } from "./components/Header";
 import { HealthBanner } from "./components/HealthBanner";
 import { GlobalStats } from "./components/GlobalStats";
@@ -10,49 +10,79 @@ import { AgentOfTheWeek } from "./components/AgentOfTheWeek";
 import { BadgeShowcase } from "./components/BadgeShowcase";
 import { AgentProfileModal } from "./components/AgentProfileModal";
 import { ConnectAgent } from "./components/ConnectAgent";
+import { UsersPage } from "./pages/UsersPage";
 import type { Id } from "../convex/_generated/dataModel";
+
+type Page = "home" | "agents";
+
+function getPageFromHash(): Page {
+  const hash = window.location.hash.replace("#", "");
+  if (hash === "agents") return "agents";
+  return "home";
+}
 
 export function App() {
   const [selectedAgent, setSelectedAgent] = useState<Id<"agents"> | null>(null);
+  const [page, setPage] = useState<Page>(getPageFromHash);
+
+  // Sync hash ↔ state
+  useEffect(() => {
+    const onHashChange = () => setPage(getPageFromHash());
+    window.addEventListener("hashchange", onHashChange);
+    return () => window.removeEventListener("hashchange", onHashChange);
+  }, []);
+
+  const navigate = (p: Page) => {
+    window.location.hash = p === "home" ? "" : p;
+    setPage(p);
+  };
 
   return (
     <div className="min-h-screen bg-zinc-950 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-zinc-900 via-zinc-950 to-zinc-950">
       {/* Health Status Banner */}
       <HealthBanner />
 
-      <Header />
+      <Header currentPage={page} onNavigate={navigate} />
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 sm:space-y-8">
-        {/* Global Stats */}
-        <GlobalStats />
+      {page === "home" && (
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 sm:space-y-8">
+          {/* Global Stats */}
+          <GlobalStats />
 
-        {/* Ecosystem Spend Chart */}
-        <EcosystemSpendChart />
+          {/* Ecosystem Spend Chart */}
+          <EcosystemSpendChart />
 
-        {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
-          {/* Leaderboard (2/3 width on desktop) */}
-          <div className="lg:col-span-2 space-y-6 sm:space-y-8">
-            <Leaderboard onSelectAgent={setSelectedAgent} />
-          </div>
-
-          {/* Sidebar (1/3 width on desktop) */}
-          <div className="space-y-6 sm:space-y-8">
-            <AgentOfTheWeek />
-
-            {/* Charts: side by side on tablet, stacked in sidebar on desktop */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-6 sm:gap-8">
-              <ProviderChart />
-              <ModelChart />
+          {/* Main Content Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
+            {/* Leaderboard (2/3 width on desktop) */}
+            <div className="lg:col-span-2 space-y-6 sm:space-y-8">
+              <Leaderboard onSelectAgent={setSelectedAgent} />
             </div>
 
-            <BadgeShowcase />
-          </div>
-        </div>
+            {/* Sidebar (1/3 width on desktop) */}
+            <div className="space-y-6 sm:space-y-8">
+              <AgentOfTheWeek />
 
-        {/* Connect Your Agent */}
-        <ConnectAgent />
-      </main>
+              {/* Charts: side by side on tablet, stacked in sidebar on desktop */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-6 sm:gap-8">
+                <ProviderChart />
+                <ModelChart />
+              </div>
+
+              <BadgeShowcase />
+            </div>
+          </div>
+
+          {/* Connect Your Agent */}
+          <ConnectAgent />
+        </main>
+      )}
+
+      {page === "agents" && (
+        <main>
+          <UsersPage onSelectAgent={setSelectedAgent} />
+        </main>
+      )}
 
       {/* Footer */}
       <footer className="border-t border-zinc-800 mt-12 sm:mt-16">
