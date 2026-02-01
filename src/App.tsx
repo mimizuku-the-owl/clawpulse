@@ -10,7 +10,12 @@ import { AgentOfTheWeek } from "./components/AgentOfTheWeek";
 import { BadgeShowcase } from "./components/BadgeShowcase";
 import { AgentProfileModal } from "./components/AgentProfileModal";
 import { ConnectAgent } from "./components/ConnectAgent";
-import { AnalyticsSection } from "./components/analytics/AnalyticsSection";
+import { CostEfficiencyChart } from "./components/analytics/CostEfficiencyChart";
+import { TokenDistributionChart } from "./components/analytics/TokenDistributionChart";
+import { AgentSpendTimelineChart } from "./components/analytics/AgentSpendTimelineChart";
+import { ProviderComparisonChart } from "./components/analytics/ProviderComparisonChart";
+import { EfficiencyLeaderboardChart } from "./components/analytics/EfficiencyLeaderboardChart";
+import { CacheUtilizationChart } from "./components/analytics/CacheUtilizationChart";
 import { UsersPage } from "./pages/UsersPage";
 import type { Id } from "../convex/_generated/dataModel";
 
@@ -53,32 +58,30 @@ export function App() {
           {/* Ecosystem Spend Chart */}
           <EcosystemSpendChart />
 
-          {/* Main Content Grid */}
+          {/* Main Content Grid — fluid, no section breaks */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
-            {/* Leaderboard (2/3 width on desktop) */}
+            {/* Left column (2/3) — leaderboard + charts flowing down */}
             <div className="lg:col-span-2 space-y-6 sm:space-y-8">
               <Leaderboard onSelectAgent={setSelectedAgent} />
+              <AgentSpendTimelineChart />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <CostEfficiencyChart />
+                <EfficiencyLeaderboardChart />
+              </div>
+              <CacheUtilizationChart />
+              <ProviderComparisonChart />
             </div>
 
-            {/* Sidebar (1/3 width on desktop) */}
+            {/* Right column (1/3) — sidebar cards flowing down */}
             <div className="space-y-6 sm:space-y-8">
               <AgentOfTheWeek />
-
-              {/* Charts: side by side on tablet, stacked in sidebar on desktop */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-6 sm:gap-8">
-                <ProviderChart />
-                <ModelChart />
-              </div>
-
+              <ProviderChart />
+              <TokenDistributionChart />
+              <ModelChart />
               <BadgeShowcase />
+              <ConnectAgent />
             </div>
           </div>
-
-          {/* Ecosystem Analytics */}
-          <AnalyticsSection />
-
-          {/* Connect Your Agent */}
-          <ConnectAgent />
         </main>
       )}
 
