@@ -1,71 +1,82 @@
 import { useQuery } from "convex/react";
 import { api } from "../../convex/_generated/api";
-import { timeAgo } from "../lib/utils";
+
+type Status = "operational" | "checking" | "disrupted";
+
+function StatusDot({ status }: { status: Status }) {
+  const colors = {
+    operational: "bg-green-500",
+    checking: "bg-yellow-500",
+    disrupted: "bg-red-500",
+  };
+
+  return (
+    <span className="relative flex h-2 w-2">
+      {status === "operational" && (
+        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
+      )}
+      <span className={`relative inline-flex h-2 w-2 rounded-full ${colors[status]}`} />
+    </span>
+  );
+}
+
+function ServiceIndicator({ name, ok }: { name: string; ok: boolean }) {
+  return (
+    <span className="flex items-center gap-1 text-[10px]">
+      <span className={`inline-block w-1.5 h-1.5 rounded-full ${ok ? "bg-green-500/80" : "bg-red-500/80"}`} />
+      <span className={ok ? "text-zinc-500" : "text-red-400"}>{name}</span>
+    </span>
+  );
+}
 
 export function HealthBanner() {
   const health = useQuery(api.metrics.healthCheck);
 
-  // Determine status
-  let status: "operational" | "degraded" | "outage" = "operational";
-  let message = "All Systems Operational";
+  let status: Status = "checking";
+  let message = "Checking...";
 
   if (health === undefined) {
-    // Still loading — show connecting state
-    status = "degraded";
-    message = "Connecting to Convex...";
-  } else if (!health.dbOk || health.agentCount === 0) {
-    status = "outage";
-    message = "System Outage Detected";
+    status = "checking";
+    message = "Checking...";
+  } else if (health && health.dbOk) {
+    status = "operational";
+    message = "All Systems Operational";
+  } else {
+    status = "disrupted";
+    message = "Service Disrupted";
   }
 
-  const dotColor =
-    status === "operational"
-      ? "bg-green-500"
-      : status === "degraded"
-        ? "bg-yellow-500"
-        : "bg-red-500";
+  const dbOk = health?.dbOk ?? false;
+  const apiOk = status !== "disrupted";
+  const collectorOk = (health?.agentCount ?? 0) > 0;
 
-  const textColor =
-    status === "operational"
-      ? "text-green-400"
-      : status === "degraded"
-        ? "text-yellow-400"
-        : "text-red-400";
+  const bgColor = {
+    operational: "bg-zinc-950/80 border-zinc-800/50",
+    checking: "bg-yellow-950/20 border-yellow-900/30",
+    disrupted: "bg-red-950/20 border-red-900/30",
+  };
+
+  const textColor = {
+    operational: "text-green-400/80",
+    checking: "text-yellow-400/80",
+    disrupted: "text-red-400/80",
+  };
 
   return (
-    <div className="h-10 bg-zinc-800/80 border-b border-zinc-700/50 flex items-center justify-center gap-6 px-4 text-xs">
-      <div className="flex items-center gap-2">
-        <span className={`relative flex h-2.5 w-2.5`}>
-          <span
-            className={`animate-ping absolute inline-flex h-full w-full rounded-full ${dotColor} opacity-75`}
-          />
-          <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${dotColor}`} />
-        </span>
-        <span className={`font-medium ${textColor}`}>{message}</span>
-      </div>
-
-      {health && (
-        <div className="hidden sm:flex items-center gap-4 text-zinc-500">
-          <span>
-            API:{" "}
-            <span className={health.dbOk ? "text-green-400" : "text-red-400"}>
-              {health.dbOk ? "OK" : "Down"}
-            </span>
-          </span>
-          <span className="text-zinc-700">•</span>
-          <span>
-            Database:{" "}
-            <span className={health.agentCount > 0 ? "text-green-400" : "text-red-400"}>
-              {health.agentCount > 0 ? "OK" : "Empty"}
-            </span>
-          </span>
-          <span className="text-zinc-700">•</span>
-          <span>
-            Last Data:{" "}
-            <span className="text-zinc-400">{health.latestDate ?? "N/A"}</span>
+    <div className={`border-b ${bgColor[status]} backdrop-blur-sm`}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-1 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <StatusDot status={status} />
+          <span className={`text-[11px] font-medium ${textColor[status]}`}>
+            {message}
           </span>
         </div>
-      )}
+        <div className="hidden sm:flex items-center gap-3">
+          <ServiceIndicator name="API" ok={apiOk} />
+          <ServiceIndicator name="Database" ok={dbOk} />
+          <ServiceIndicator name="Collector" ok={collectorOk} />
+        </div>
+      </div>
     </div>
   );
 }
